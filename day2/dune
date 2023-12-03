@@ -1,0 +1,6 @@
+(executable
+ (public_name day2)
+ (name day2)
+ (flags -warn-error)
+ (preprocess (pps ppx_show))
+ (libraries aoc2023 batteries ppx_show.runtime))
