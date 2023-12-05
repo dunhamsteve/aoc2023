@@ -25,3 +25,11 @@ show to work, and moved the file functions to a library. Still on the fence on
 whether to do the whole thing in OCaml, or just use Lean.  I'll have to pick
 one once they start taking longer.
 
+## Day 3
+
+Not too notable.  I added `Grid` for a two dimensional array of values. I later spent part of the day adding index proofs to a copy in `Aoc2023.lean`. I'll try to adopt that on later days.
+
+## Day 4
+
+This one was simple and straightforward. I dealt with the `Array` indices in this one after finishing it.
+
