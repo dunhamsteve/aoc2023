@@ -33,3 +33,9 @@ Not too notable.  I added `Grid` for a two dimensional array of values. I later 
 
 This one was simple and straightforward. I dealt with the `Array` indices in this one after finishing it.
 
+## Day 5
+
+I got in the weeds a little on part 1. I'd gone off and wrote code to compose
+the maps before reading through to the end and seeing that it was much simpler
+than that. Part 2 took a little more time, most just debugging the indices. I'd
+like to go back and remove the `partial`.
