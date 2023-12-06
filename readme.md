@@ -39,3 +39,11 @@ I got in the weeds a little on part 1. I'd gone off and wrote code to compose
 the maps before reading through to the end and seeing that it was much simpler
 than that. Part 2 took a little more time, most just debugging the indices. I'd
 like to go back and remove the `partial`.
+
+Went back and did `day5v2.lean`, which is total by structural recursion.  I think
+the `apply'` is more clear this way.  I did make a few mistakes (fixed by each occurrence of `min`) that could have been detected by a length in = total length out
+constraint.
+
+## Day 6
+
+This was an easy day, and I got to break out the quadratic formula.
