@@ -47,3 +47,8 @@ constraint.
 ## Day 6
 
 This was an easy day, and I got to break out the quadratic formula.
+
+## Day 7
+
+Fairly straightforward.  For the first pass I just copied and edited for part2, because I was working
+from my phone.  I then went back and cleaned things up.
