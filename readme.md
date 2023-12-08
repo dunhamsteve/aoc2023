@@ -52,3 +52,7 @@ This was an easy day, and I got to break out the quadratic formula.
 
 Fairly straightforward.  For the first pass I just copied and edited for part2, because I was working
 from my phone.  I then went back and cleaned things up.
+
+## Day 8
+
+This one went fairly quickly.  I grabbed `lcm` from last year, and used `Parsec` this time.
