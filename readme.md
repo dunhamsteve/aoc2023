@@ -56,3 +56,7 @@ from my phone.  I then went back and cleaned things up.
 ## Day 8
 
 This one went fairly quickly.  I grabbed `lcm` from last year, and used `Parsec` this time.
+
+## Day 9
+
+Was really quick, but I should go back and show totality.
