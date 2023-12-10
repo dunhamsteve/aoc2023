@@ -9,23 +9,6 @@ structure Grid (α : Type) where
   start : Point
 deriving Repr, Inhabited
 
-
--- Unfortunately I can't use these in match statements.
-def N := 1
-def E := 2
-def S := 4
-def W := 8
-
-def xlate : Char -> Nat
-| '|' => N + S
-| '-' => E + W
-| 'L' => N + E
-| 'J' => N + W
-| '7' => W + S
-| 'F' => E + S
-| 'S' => 15
-| _   => 0
-
 namespace Grid
   def get [Inhabited α] (g : Grid α) : Point -> α
   | (r,c) => if r < g.height ∧ c < g.width then g.data[r*g.width+c]! else default
@@ -35,48 +18,49 @@ namespace Grid
       then let width := g.width; { g with data := (g.data.set! (r*width+c) a) }
       else g
 
-  def neighbors (g : Grid Nat) (pos : Point): (Point × Point) :=
+  def neighbors (g : Grid Char) (pos : Point): (Point × Point) :=
     let (r,c) := pos
     match g.get pos with
-    | 5 =>  ((r-1,c), (r+1,c))
-    | 10 => ((r,c-1), (r,c+1))
-    | 3 =>  ((r-1,c), (r,c+1))
-    | 9 =>  ((r-1,c), (r,c-1))
-    | 12 => ((r,c-1), (r+1,c))
-    | 6 =>  ((r,c+1),(r+1,c))
+    | '|' =>  ((r-1,c), (r+1,c))
+    | '-' => ((r,c-1), (r,c+1))
+    | 'L' =>  ((r-1,c), (r,c+1))
+    | 'J' =>  ((r-1,c), (r,c-1))
+    | '7' => ((r,c-1), (r+1,c))
+    | 'F' =>  ((r,c+1),(r+1,c))
     | _ => dbg_trace "ERROR neighbors {g.get pos}"; ((0,0),(0,0))
 
-
-  def guess (g : Grid Nat) (pos : Point) :=
+  def guess (g : Grid Char) (pos : Point) : Char :=
     let (r,c) := pos
-    let north := S == S.land (ite (r > 0) (g.get (r.pred, c)) 0)
-    let east := W == W.land (g.get (r, c+1))
-    let south := N == N.land (g.get (r+1, c))
-    let west := E == E.land (ite (c > 0) (g.get (r,c.pred)) 0)
+    let north := ['|', '7', 'F'].elem (g.get (r.pred, c))
+    let east :=  ['-', 'J', '7'].elem (g.get (r, c+1))
+    let south := ['|', 'J', 'L'].elem (g.get (r+1, c))
+    let west :=  ['-', 'F', 'L'].elem (g.get (r,c.pred))
 
-    if north && south then N + S
-    else if east && west then E + W
-    else if north && east then N + E
-    else if north && west then N + W
-    else if west && south then W + S
-    else if east && south then E + S
-    else if north && south then N + S
-    else dbg_trace "guess fail {g.get (r.pred,c)}:{north} {g.get (r,c+1)}:{east}  {g.get (r+1,c)}:{south} {g.get (r,c-1)}"; 0
+    -- the case analysis seems to break on this
+    -- I think jesper cockx thesis discuses it
+    if north && south then '|'
+    else if east && west then '-'
+    else if north && east then 'L'
+    else if north && west then 'J'
+    else if west && south then '7'
+    else if east && south then 'F'
+    else dbg_trace "guess fail {g.get (r.pred,c)}:{north} {g.get (r,c+1)}:{east}  {g.get (r+1,c)}:{south} {g.get (r,c-1)}";
+         default
 
 end Grid
 
 -- lean gets slow if I add index proofs? even just 'h.2
-def parseGrid (content : String) : Option (Grid Nat) := do
+def parseGrid (content : String) : Option (Grid Char) := do
   let lines := ((content.trim.splitOn "\n").map (·.toList))
   let width := lines.head!.length
   let height := lines.length
-  let data := lines.join.toArray.map xlate
+  let data := lines.join.toArray
 
   let mut start := (0,0)
-  let grid : Grid Nat := { width, height, data, start }
+  let grid : Grid Char := { width, height, data, start }
   for r in [0:height] do
     for c in [0:width] do
-      if grid.get (r,c) == 15 then
+      if grid.get (r,c) == 'S' then
         start := (r,c)
         break
   let guess := grid.guess start
@@ -110,18 +94,17 @@ def main(args : List String) : IO Unit := do
 
   -- the `inside` state represents inside / outside normally and above/below
   -- when on horizontal lines.  where true is inside / above
-  let rec run2 (count : Nat) (inside : Bool) : (data : List Nat) -> (gdata : List Nat) -> Nat
+  let rec run2 (count : Nat) (inside : Bool) : (data : List Nat) -> (gdata : List Char) -> Nat
   | 0 :: xs, _ :: ys => run2 (ite inside count.succ count) inside xs ys
   | _ :: xs, y :: ys => match y with
-      | 5 | 3 | 9 => run2 count (!inside) xs ys
-      | 10 | 6 | 12 => run2 count inside xs ys
+      | '|' | 'L' | 'J' => run2 count (!inside) xs ys
+      | '-' | 'F' | '7' => run2 count inside xs ys
       | _=> dbg_trace "illegal state {y} {repr inside}"; 99999999
   | [], [] => count
   | foo, bar => dbg_trace "err {foo} {bar}"; count
 
   let part2 := run2 0 false marks.data.toList grid.data.toList
   println! "part2 {part2}"
-
 
 #eval main ["day10/eg.txt"]
 #eval main ["day10/eg2.txt"]
