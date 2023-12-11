@@ -60,3 +60,12 @@ This one went fairly quickly.  I grabbed `lcm` from last year, and used `Parsec`
 ## Day 9
 
 Was really quick, but I should go back and show totality.
+
+## Day 10
+
+For part 2, I recalled some trick about counting line crossings for filling curves, that I think is used in PDF rendering. So I took that approach. I later went back and took out the N, S, E, W bitmasks and used the original letters instead.  It made the code a little clearer.
+
+## Day 11
+
+Part 2 involved changing one number, I already had the right data structure in place. (I
+went back and added an argument.)
