@@ -69,3 +69,7 @@ For part 2, I recalled some trick about counting line crossings for filling curv
 
 Part 2 involved changing one number, I already had the right data structure in place. (I
 went back and added an argument.)
+
+## Day 12
+
+I did part 1 with some heuristics for cutting the search. Probably should have checked that in. Part 2 I recognised as a dynamic programming problem and added memoization. I then spent a bunch of time debugging working code, beacuse I'd missed the "separated by ?" in the instructions.
