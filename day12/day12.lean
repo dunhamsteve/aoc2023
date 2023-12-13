@@ -1,7 +1,7 @@
 import Lean
 open Lean RBMap
 
-inductive Flag | spring | unknown | empty deriving Repr
+inductive Flag | spring | unknown | empty deriving Repr, BEq
 
 structure Line where
   chars : List Flag
@@ -49,8 +49,19 @@ def showFlags : (List Flag) -> List Char
 | .spring :: cs => '#' :: showFlags cs
 | .empty :: cs => '.' :: showFlags cs
 
-partial
-def solutions (chars : List Flag) (runs : List Nat) (d : Nat) : M Nat := do
+theorem drop_le (r : Nat) (cs : List Flag) :  sizeOf (cs.drop r) <= sizeOf cs := by
+  revert cs
+  induction r
+  intro cs
+  apply Nat.le_of_eq; rfl
+  intro cs
+  cases cs
+  apply Nat.le_of_eq; rfl
+  rename_i n ih head tail
+  apply Nat.le_trans (ih tail)
+  simp [Nat.le_add_left]
+
+def solutions (chars : List Flag) (runs : List Nat) : M Nat := do
   let cl := chars.length
   let rl := runs.length
   let memo (val : Nat) : M Nat := modifyGet λ m => (val, m.insert (cl,rl) val)
@@ -58,21 +69,22 @@ def solutions (chars : List Flag) (runs : List Nat) (d : Nat) : M Nat := do
   | .some n => pure n
   | .none =>
     match chars with
-      | .empty :: cs => solutions cs runs  d.succ >>= memo
+      | .empty :: cs => solutions cs runs >>= memo
       | .spring :: cs => match runs with
           | [] => memo 0
           | r :: rs => if fits r chars
-                         then solutions (cs.drop r) rs d.succ >>= memo
+                         then solutions (cs.drop r) rs >>= memo
                          else memo 0
       | .unknown :: cs => match runs with
-          | [] => solutions cs runs d.succ -- TODO just check for springs
-          | r :: rs => do let a <- ite (fits r chars) (solutions (cs.drop r) rs d.succ) (pure 0)
-                          let b <- solutions cs runs d.succ
+          | [] => ite (cs.elem .spring) (memo 0) (memo 1)
+          | r :: rs => do let a <- ite (fits r chars) (solutions (cs.drop r) rs ) (pure 0)
+                          let b <- solutions cs runs
                           memo (a + b)
       | [] => memo (ite runs.isEmpty 1 0)
--- termination_by solutions chars runs => chars
+termination_by solutions chars runs => chars
+decreasing_by simp_wf; simp_arith; try simp [Nat.le_succ_of_le, drop_le]
 
-def run := λ chars runs => ((solutions chars runs 0).run empty).1
+def run := λ chars runs => ((solutions chars runs).run empty).1
 
 def main(args : List String) : IO Unit := do
   let fname :: _ := args | println! "too few arguments"

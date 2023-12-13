@@ -72,4 +72,6 @@ went back and added an argument.)
 
 ## Day 12
 
-I did part 1 with some heuristics for cutting the search. Probably should have checked that in. Part 2 I recognised as a dynamic programming problem and added memoization. I then spent a bunch of time debugging working code, beacuse I'd missed the "separated by ?" in the instructions.
+I did part 1 with some heuristics for cutting the search. Probably should have checked that in. Part 2 I recognised as a dynamic programming problem and added memoization. I then spent a bunch of time debugging working code, beacuse I'd missed the "separated by ?" in the instructions.  And I hit a couple of snags matching on multiple values and had to build out the case trees manually.
+
+I went back and showed totality, had to add a theorem that drop return its arg or something smaller.
