@@ -23,6 +23,11 @@ let read_chars (fn : string) =
 
 let read_string (fn : string) = String.implode (read_chars fn)
 
+let read_lines (fn : string) =
+  read_string fn
+  |> String.strip
+  |> String.split_on_string ~by:"\n"
+
 let debug x =
   print_endline (string_of_int x);
   x
