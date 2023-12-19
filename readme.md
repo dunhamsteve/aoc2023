@@ -79,7 +79,11 @@ I went back and showed totality, had to add a theorem that drop return its arg o
 ## Day 18
 
 Day 18 was a bit of a beast. For part 1 I expanded everything out and did a fill (not checked
-in), but had some off by one errors to deal with. Part 2 took a while, I started by
-partitioning to virtual rows and columns for each horizontal/vertical point and filling. There
-were a lot of edge cases, so I switched to the Day 10 algorithm, which also had a lot of edge
-cases. Recasting part 1 to the part 2 code helped debugging.
+in), but had some off by one errors to deal with. After looking at the example, I made an assumption that the coordinates didn't go negative (i.e. I used `Nat`), which led to a bunch
+of debugging before I realized my mistake. I also had a stray copy of of the grid in the set
+method, causing `O(n)` updates instead of `O(1)`.
+
+Part 2 took a while, I started by partitioning to virtual rows and columns for each
+horizontal/vertical point and filling. There were a lot of edge cases, so I switched to the
+Day 10 algorithm, which also had a lot of edge cases. Recasting part 1 to the part 2 code
+helped debugging.
