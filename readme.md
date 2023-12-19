@@ -75,3 +75,11 @@ went back and added an argument.)
 I did part 1 with some heuristics for cutting the search. Probably should have checked that in. Part 2 I recognised as a dynamic programming problem and added memoization. I then spent a bunch of time debugging working code, beacuse I'd missed the "separated by ?" in the instructions.  And I hit a couple of snags matching on multiple values and had to build out the case trees manually.
 
 I went back and showed totality, had to add a theorem that drop return its arg or something smaller.
+
+## Day 18
+
+Day 18 was a bit of a beast. For part 1 I expanded everything out and did a fill (not checked
+in), but had some off by one errors to deal with. Part 2 took a while, I started by
+partitioning to virtual rows and columns for each horizontal/vertical point and filling. There
+were a lot of edge cases, so I switched to the Day 10 algorithm, which also had a lot of edge
+cases. Recasting part 1 to the part 2 code helped debugging.

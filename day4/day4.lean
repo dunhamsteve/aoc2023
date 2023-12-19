@@ -27,11 +27,7 @@ def part2 (data : List Card) : IO Unit := do
   for h : i in [0:l] do
     let (a,b) := data[i]'h.2
     let n := (a.filter λ n => b.contains n).length
-    have : i < counts.1.size := by
-        have h2 : i < l := h.2
-        rw [counts.2] at h2
-        exact h2
-    let mult := counts.1[i]
+    let mult := counts.1[i]'(by rw [<-counts.2]; exact h.2)
     for j in [0:n] do
       let ix := i + j + 1
       if h : ix < counts.1.size then
@@ -50,3 +46,4 @@ def main(args : List String) : IO Unit := do
 
 #eval main ["day4/eg.txt"]
 #eval main ["day4/input.txt"]
+--
