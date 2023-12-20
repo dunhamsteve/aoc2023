@@ -34,6 +34,9 @@ lean_exe day18 {
 lean_exe day19 {
   root := `Day19.Day19
 }
+lean_exe day20 {
+  root := `Day20.Day20
+}
 -- @[default_target]
 -- lean_exe «Aoc2023» {
 --   root := `Main

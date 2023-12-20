@@ -1,0 +1,36 @@
+#!/bin/bash -x -e
+
+if [ "$1" ]; then
+  echo caml day$1
+  if [ ! -f day$1/dune ]; then
+    echo day$1/dune
+    cat > day$1/dune <<EOF
+(executable
+(public_name day$1)
+(name day$1)
+(flags -warn-error)
+(preprocess (pps ppx_show))
+(libraries aoc2023 batteries ppx_show.runtime))
+EOF
+  fi
+  if [ ! -f day$1/day$1.ml ]; then
+    echo day$1/day$1.ml
+    cat > day$1/day$1.ml <<EOF
+open Batteries
+open BatList
+open Aoc2023.Utils
+
+let process fn =
+  let content = read_string fn in
+  
+  ()
+  
+let () = 
+  process "day$1/eg.txt";
+  process "day$1/input.txt"
+  
+EOF
+  fi
+else
+  echo "usage: $0 10"
+fi
