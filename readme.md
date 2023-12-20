@@ -87,3 +87,9 @@ Part 2 took a while, I started by partitioning to virtual rows and columns for e
 horizontal/vertical point and filling. There were a lot of edge cases, so I switched to the
 Day 10 algorithm, which also had a lot of edge cases. Recasting part 1 to the part 2 code
 helped debugging.
+
+## Day 19
+
+Also a pain. For part two I had a logic error that caused me to go back and rework things all way back to the parser and data representation (and had to wait until after work and making dinner to finish). I went back and adapted part1 to the new structure.  Probably could use some clean up, but I'm taking a break.
+
+In part two, I had to deal with ranges across four dimensions. I just ran them forward through the instructions, taking all of the possible branches. At the end I had to sort out the union of them. I vaguely remembered something from a previous year that involved adding something, and then subtracing the intersection with the previous stuff (positive and negative), adding those intersections onto the list of previous stuff (with the sign flipped). That's kind of exponential, but a lot of them filter out as empty.
