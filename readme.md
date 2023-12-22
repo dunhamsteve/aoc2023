@@ -101,3 +101,9 @@ over the blank spaces) and did a bunch of work to work out the diamond edges (pi
 just long enough to fill to the edge and copyied each of the macro blocks out of that. 
 
 There were still a few transcription errors (I pulled a top right instead of bottom right for outer edge), but I eventually found them and the answer popped out. I probably submitted a dozen tries over the course of the day though.
+
+## Day 22
+
+This one was fairly simple, I expected to have a tricky optimization problem
+in part 2, but it was a straight forward computation.
+
