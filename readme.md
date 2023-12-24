@@ -107,3 +107,8 @@ There were still a few transcription errors (I pulled a top right instead of bot
 This one was fairly simple, I expected to have a tricky optimization problem
 in part 2, but it was a straight forward computation.
 
+## Day 23
+
+This took a while and I mangled stuff enough that I wasn't going to get the
+same code working on part 1 and part 2.  For part 2, I ended up turning the
+input into a graph and running A* on it.
