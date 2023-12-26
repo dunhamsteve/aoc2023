@@ -112,3 +112,14 @@ in part 2, but it was a straight forward computation.
 This took a while and I mangled stuff enough that I wasn't going to get the
 same code working on part 1 and part 2.  For part 2, I ended up turning the
 input into a graph and running A* on it.
+
+## Day 24
+
+I'm really stuck on part 2 here. It's almost linear programming, but it's not linear. I think three may be enough to determine the answer, but likely need
+it all to narrow down the possibilities.
+
+## Day 25
+
+I took a break from 24 and knocked this one out.  It's not fast, but it works.  I
+just used Karger's algorithm, which google pulled up.  Probably could use a more
+efficient representation of the graph. (I keep having to deduplicate.)
