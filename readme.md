@@ -121,6 +121,9 @@ it all to narrow down the possibilities.
 I ended up getting a hint on how to get rid of the nonlinear term, so I could
 go with my original gaussian elimination strategy.
 
+I read on reddit that some people were using Z3, which I've been meaning to
+try out, so I went back and added that (via python).
+
 ## Day 25
 
 I took a break from 24 and knocked this one out.  It's not fast, but it works.  I
