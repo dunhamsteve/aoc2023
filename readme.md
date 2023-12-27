@@ -118,6 +118,9 @@ input into a graph and running A* on it.
 I'm really stuck on part 2 here. It's almost linear programming, but it's not linear. I think three may be enough to determine the answer, but likely need
 it all to narrow down the possibilities.
 
+I ended up getting a hint on how to get rid of the nonlinear term, so I could
+go with my original gaussian elimination strategy.
+
 ## Day 25
 
 I took a break from 24 and knocked this one out.  It's not fast, but it works.  I
