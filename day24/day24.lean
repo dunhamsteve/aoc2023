@@ -65,17 +65,6 @@ def parseFile (content : String) : Option (List Line) :=
 
 -- ## Math
 
-
---def det (a b c d : Float) :=  a * d - b * c
-def det (a b c d : Int) :=  -- a * d - b * c
-  let a := a.toNat
-  let b := b.toNat
-  let c := c.toNat
-  let d := d.toNat
-  let x := a*d
-  let y := b*c
-  if x > y then Int.ofNat (x-y) else -1*Int.ofNat (y-x)
-
 def isect (a b : Line) : Option (Float × Float × Float × Float) :=
   let ⟨ x₁, y₁, _ ⟩ := a.pos
 
@@ -90,25 +79,6 @@ def isect (a b : Line) : Option (Float × Float × Float × Float) :=
   let top_x := (x₁*y₂ - y₁*x₂)*(x₃-x₄) + (x₁-x₂)*(y₃*x₄-x₃*y₄)
   let top_y := (x₁*y₂ - y₁*x₂)*(y₃-y₄) + (y₁-y₂)*(y₃*x₄-x₃*y₄)
   let bot := (x₁-x₂)*(y₃-y₄) - (y₁-y₂)*(x₃-x₄)
-
-
-  -- let top_x := det
-  --     (det x₁ y₁ x₂ y₂)
-  --     (det x₁ 1 x₂ 1)
-  --     (det x₃ y₃ x₄ y₄)
-  --     (det x₃ 1 x₄ 1)
-
-  -- let top_y := det
-  --     (det x₁ y₁ x₂ y₂)
-  --     (det y₁ 1 y₂ 1)
-  --     (det x₃ y₃ x₄ y₄)
-  --     (det y₃ 1 y₄ 1)
-
-  -- let bot := det
-  --     (det x₁ 1 x₂ 1)
-  --     (det y₁ 1 y₂ 1)
-  --     (det x₃ 1 x₄ 1)
-  --     (det y₃ 1 y₄ 1)
 
 --  Find bad point (samey issue) and investigate.  it's float subtract.. make isect check answers
   let top_x := Float.ofInt top_x
@@ -136,8 +106,6 @@ def bar := "417745975923774, 293484304091146, 309738404744489 @ -119, -7, 33"
 #eval isect <$> parseLine "19, 13, 30 @ -2, 1, -2" <*> parseLine "18, 19, 22 @ -1, -1, -2"
 #eval isect <$> parseLine "18, 19, 22 @ -1, -1, -2" <*> parseLine "20, 25, 34 @ -2, -2, -4"
 
-
-
 def part1 (lines : List Line) (min max : Float) : IO Unit := do
   let mut total := 0
   for l in lines do
@@ -152,13 +120,26 @@ def part1 (lines : List Line) (min max : Float) : IO Unit := do
             total := total + 1
   println! "part1 {total / 2}"
 
-def mkRow (a b : Line) : Array Int :=
+def mkRowXY (a b : Line) : Array Int :=
   #[
     b.vel.y - a.vel.y, -- x
     a.vel.x - b.vel.x, -- y
+    0,
     a.pos.y - b.pos.y, -- vx
     b.pos.x - a.pos.x, -- vy
+    0,
     a.pos.y*a.vel.x - b.pos.y*b.vel.x + b.pos.x*b.vel.y - a.pos.x*a.vel.y
+  ]
+
+def mkRowXZ (a b : Line) : Array Int :=
+  #[
+    b.vel.z - a.vel.z, -- x
+    0,
+    a.vel.x - b.vel.x, -- z
+    a.pos.z - b.pos.z, -- vx
+    0,
+    b.pos.x - a.pos.x, -- vz
+    a.pos.z*a.vel.x - b.pos.z*b.vel.x + b.pos.x*b.vel.z - a.pos.x*a.vel.z
   ]
 
 abbrev Row := Array Int
@@ -191,17 +172,19 @@ def Matrix.elim (mtx : Matrix) (col row : Nat) : Matrix :=
   mtx.set! row (src + dst)
 
 def gaussian (mtx : Matrix) : IO Matrix := do
-  -- yay
   let mut mtx := mtx
-  -- get non-zero in the right columns
-
-  for i in [0:mtx.size] do
-    if mtx[i]![i]! == 0 then
-      let .some ix := mtx.findIdx? (λ x => x[i]! != 0)
-        | dbg_trace "FAIL"; return mtx
-      mtx := mtx.set! i (mtx[i]! + mtx[ix]!)
 
   for col in [0:mtx.size] do
+    -- get non-zero in the right columns
+    -- elim steps can make this recur
+    if mtx[col]![col]! == 0 then
+      for row in [col.succ:mtx.size] do
+        if (mtx.get! row |>.get! col) != 0 then
+          mtx := mtx.set! col (mtx[col]! + mtx[row]!)
+          break
+    if mtx[col]![col]! == 0 then
+      panic! "FAIL underdetermined - {col},{col} = 0"
+
     for row in [0:mtx.size] do
       if row != col then
         mtx := mtx.elim col row
@@ -213,23 +196,20 @@ def gaussian (mtx : Matrix) : IO Matrix := do
   pure mtx
 
 def part2 (lines : List Line) : IO Unit := do
-  let a :: b :: c :: d :: e :: _ := lines | println! "need five lines"
+  let a :: b :: c :: e :: d :: _ := lines | println! "need five lines"
   let mtx := #[
-    mkRow a b,
-    mkRow a c,
-    mkRow a d,
-    mkRow a e
+    mkRowXY a b,
+    mkRowXZ a b,
+    mkRowXY a c,
+    mkRowXZ a c,
+    mkRowXY a d,
+    mkRowXZ a d
   ]
-
+  println! mtx
   let result <- gaussian mtx
-  let #[x,y,vx,vy] := result.map (·.get! mtx.size) | pure ()
+  println! result
+  let #[x,y,z,vx,vy,vz] := result.map (·.get! mtx.size) | pure ()
 
-  let ta := (a.pos.x - x) / (vx - a.vel.x)
-  let za := (a.pos.z + ta*a.vel.z)
-  let tb := (b.pos.x - x) / (vx - b.vel.x)
-  let zb := (b.pos.z + tb*b.vel.z)
-  let vz := (zb - za)/(tb - ta)
-  let z := za - vz*ta
   println! "{x} {y} {z} @ vx {vx} vy {vy} vz {vz}"
   let result := x + y + z
   println! "part2 {result}"
